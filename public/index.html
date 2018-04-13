@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Genealogy App</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="CHANGE ME">
+    <meta name="keywords" content="CHANGE ME">
+    <meta name="author" content="Samir Haq">
+    <!-- Load jquery, bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <!-- Custom CSS End -->
+</head>
+<body>
+    <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header" align>
+          <h4 class="modal-title">Login Credentials</h4>
+        </div>
+        <div class="modal-body">
+            <div class = "formPanel">
+                <form id = "popup" class = "popup">
+
+                    <label for="host">Host</label>
+                    <input type="text" id="host" name="host" value="dursley.socs.uoguelph.ca">
+
+                    <label for="user">Username</label>
+                    <input type="text" id="user" name="user" value="usernameGoesHere">
+
+                    <label for="password">Password</label>
+                    <input type="text" id="password" name="password" value="passwordGoesHere">
+
+                    <label for="database">Database</label>
+                    <input type="text" id="database" name="database" value= "databaseGoesHere">
+                
+                    <button type="submit" id = "modalSubmit">Enter</button>
+                </form>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+    </div>
+    <div class = "header">
+        <h1 align = "center">Geanology App</h1>
+    </div>
+    <div class ="statusPanel">
+        <p class = "panelHeading">Status Panel</p>
+        <div class = "statusBody" id = "statusPanel">
+        </div>
+        <button type ="button" class = "clear" id = "clear">Clear</button>
+    </div>
+
+    <div class = "row">
+        <div class ="panel">
+            <p class = "panelHeading">GEDCOM View Panel</p>
+            <div class = "panelBody">
+                <select id="fnameView" name="fnameView">
+                </select>
+                <table id = "view">
+                    <tr>
+                        <th>Given Name</th>
+                        <th>Surname</th>
+                        <th>Sex</th>
+                        <th>Family Size</th>
+                    </tr>
+                    <tr>
+                        <td>No Individuals</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class ="panel">
+            <p class = "panelHeading">File Log Panel</p>
+            <div class = "panelBody">
+                <table id = "fileLog">
+                    <tr>
+                        <th>File Name (click to download)</th>
+                        <th>Source</th>
+                        <th>GEDC version</th>
+                        <th>Encoding</th>
+                        <th>Submitter Name</th>
+                        <th>Submitter Address</th>
+                        <th>Number of Individuals</th>
+                        <th>Number of Families</th>
+                    </tr>
+                    <tr>
+                        <td>No Files</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class = "row">
+        <ul class="nav nav-tabs">
+            <li><a data-toggle="tab" href="#upload">Upload GEDCOM</a></li>
+            <li><a data-toggle="tab" href="#create">Create GEDCOM</a></li>
+            <li><a data-toggle="tab" href="#add">Add Individual</a></li>
+            <li><a data-toggle="tab" href="#descendants">Get Descendants</a></li>
+            <li><a data-toggle="tab" href="#ancestors">Get Ancestors</a></li>
+            <li><a data-toggle="tab" href="#databaseControls">Database</a></li>
+        </ul>
+
+        <div class="tab-content">
+            <div id="upload" class="tab-pane fade">
+            <h3 class = "tabHeading">Upload GEDCOM File</h3>
+                <form ref = "uploadForm" id = "uploadForm" action = "/upload" method = "POST" encType = "multipart/form-data" class = "createFormF">
+                    <input type = "file" name = "uploadFile"/>
+                    <br>
+                    <input type = "submit" value = "Upload"/>
+                </form>
+            </div>
+            <div id="create" class="tab-pane fade">
+                <h3 class = "tabHeading">Create Simple GEDCOM</h3>
+                <div class = "formPanel">
+                    <form ref = "createForm" id = "createForm" action = "/create" method = "GET">
+
+                        <label for="fileName">File Name (.ged)</label>
+                        <input type="text" id="fileName" name="fileName" placeholder="File Name..." required>
+
+                        <label for="source">Source</label>
+                        <input type="text" id="source" name="source" placeholder="Source..." required>
+
+                        <label for="encoding">Encoding</label>
+                        <select id="encoding" name="encoding">
+                        <option value="ASCII">ASCII</option>
+                        <option value="ANSEL">ANSEL</option>
+                        <option value="UTF8">UTF-8</option>
+                        <option value="UNICODE">UNICODE</option>
+                        </select>
+
+                        <label for="version">GEDCOM Version</label>
+                        <input type="text" id="version" name="version" placeholder="5.5" readonly>
+
+                        <label for="subName">Submitter Name</label>
+                        <input type="text" id="subName" name="subName" placeholder="Submitter..." required>
+
+                        <label for="address">Address</label>
+                        <input type="text" id="address" name="address" placeholder="Address...">
+                        <input type="submit" value="Create GEDCOM">
+                    </form>
+                </div>
+            </div>
+            <div id="add" class="tab-pane fade">
+                <h3 class = "tabHeading">Add Individual</h3>
+                <div class = "formPanel">
+                    <form "addForm" id = "addForm" action = "/add" method = "GET">
+
+                        <label for="fname">File</label>
+                        <select id="fnameInd" name="fnameInd">
+                        </select>
+
+                        <label for="gname">Given Name</label>
+                        <input type="text" id="gname" name="gname" placeholder="Given Name...">
+
+                        <label for="surname">Surname</label>
+                        <input type="text" id="surname" name="surname" placeholder="Surname...">
+                    
+                        <input type="submit" value="Add Individual">
+                    </form>
+                </div>
+            </div>
+            <div id="descendants" class="tab-pane fade">
+            <h3 class = "tabHeading">Get Descendants</h3>
+                <div class = "formPanel">
+                    <form id = "descendants" class = "descendants">
+
+                        <label for="fname">File</label>
+                        <select id="fnameDescendant" name="fnameDescendant">
+                        </select>
+
+                        <label for="gname">Given Name</label>
+                        <input type="text" id="gnameDescendant" name="gname" placeholder="Given Name...">
+
+                        <label for="surname">Surname</label>
+                        <input type="text" id="surnameDescendant" name="surname" placeholder="Surname...">
+
+                        <label for="maxGen">Maximum Number of Generations (0 for all)</label>
+                        <input type="number" id="maxGenDescendant" name="maxGen" placeholder="Max Gen..." required min=0 oninput="validity.valid||(value='');"><br>
+                    
+                        <button type="submit" id = "descendantsSubmit">Get Descendants</button>
+                    </form>
+                </div>
+            </div>
+            <div id="ancestors" class="tab-pane fade">
+            <h3 class = "tabHeading">Get Ancestors</h3>
+                <div class = "formPanel">
+                    <form id = "ancestors" class = "ancestors">
+
+                        <label for="fname">File</label>
+                        <select id="fnameAncestor" name="fnameAncestor">
+                        </select>
+
+                        <label for="gname">Given Name</label>
+                        <input type="text" id="gnameAncestor" name="gnameAncestor" placeholder="Given Name...">
+
+                        <label for="surname">Surname</label>
+                        <input type="text" id="surnameAncestor" name="surnameAncestor" placeholder="Surname...">
+
+                        <label for="maxGen">Maximum Number of Generations (0 for all)</label>
+                        <input type="number" id="maxGenAncestor" name="maxGenAncestor" placeholder="Max Gen..." required min=0 oninput="validity.valid||(value='');"><br>
+                    
+                        <button type="submit" id = "ancestorsSubmit">Get Ancestors</button>
+                    </form>
+                </div>
+            </div>
+            <div id="databaseControls" class="tab-pane fade">
+                <h3 class = "tabHeading">Database</h3>
+                <div class = "btn-group">
+                    <button id = "store" class = "store">Store All Files</button>
+                    <button id = "clearData" class = "clearData">Clear All Data</button>
+                    <button id = "displayStatus" class = "displayStatus">Display DB Status</button>
+                    <button id = "execute" class = "execute">Execute Query</button>
+                </div>
+                <div class = "queryPanel" id = "queryPanel">
+                    <select id="fnameQuery" name="fnameQuery">
+                    </select>
+                    <div class = "btn-group">
+                    <button id = "query1" class = "query1">Sort Individuals (Last Name)</button>
+                    <button id = "query2" class = "query2">Individuals From File</button>
+                    <button id = "query3" class = "query3">ASCII Encoded Files</button>
+                    <button id = "query4" class = "query4">Individuals With 5+ Family Members</button>
+                    <button id = "query5" class = "query5">Female Individuals</button>
+                    <button id = "help" class = "help">Help</button>
+                    <button id = "hide" class = "hide">Hide</button>
+                    </div>
+                    <div class = "search-bar">
+                    <form id = "search" class = "search">
+                        <input type="text" id="searchInput" name="searchInput" value= "SELECT">
+                        <button type="submit" id = "searchSubmit">Find</button>
+                    </form>
+                    </div>
+                    <div class = "panelBody" id = "panelBody">
+                    <p class = "panelHeading" id = "queryHeading"></p>
+                    <table id = "queryTable">
+                    </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class = "row">
+        <div id = "descendantsTree" class = "descendantsTree"></div>
+    </div>
+    
+
+    
+    <!-- Leave me at the bottom of body -->
+    <script src="/index.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
